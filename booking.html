@@ -1,31 +1,207 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Booking</title>
+  <title>StudyBuddy | Booking</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
+<div class="nav">
+  <div class="logo">📘 Study<span>Buddy</span></div>
+</div>
+
 <div class="hero">
-  <h1>Book a Session</h1>
 
-  <input type="text" placeholder="Your Name"><br><br>
-  <input type="email" placeholder="Email"><br><br>
+  <h1>Book Your Session</h1>
 
-  <select>
-    <option>Primary</option>
-    <option>High School</option>
-    <option>University</option>
+  <!-- LEVEL -->
+  <select id="level">
+    <option value="">Select Level</option>
+    <option value="primary">Primary</option>
+    <option value="highschool">High School</option>
+    <option value="university">University</option>
   </select><br><br>
 
-  <input type="datetime-local"><br><br>
+  <!-- SUBJECT -->
+  <select id="subject"></select><br><br>
 
-  <button class="btn" onclick="alert('Booking submitted!')">
-    Submit
-  </button>
+  <!-- COURSE -->
+  <select id="course"></select><br><br>
+
+  <!-- LANGUAGE OPTION (Python / Java) -->
+  <select id="langOption" style="display:none;"></select><br><br>
+
+  <!-- PACKAGE -->
+  <select id="package">
+    <option value="1">1 Session</option>
+    <option value="3">3 Sessions (-10%)</option>
+    <option value="10">10 Sessions (-20%)</option>
+  </select><br><br>
+
+  <!-- TIME -->
+  <input type="datetime-local" id="time"><br><br>
+
+  <!-- INFO -->
+  <input type="text" id="name" placeholder="Your Name"><br><br>
+  <input type="email" id="email" placeholder="Email"><br><br>
+
+  <button class="btn" onclick="submitBooking()">Submit Booking</button>
+
+  <div id="priceBox"></div>
 
 </div>
+
+<script>
+
+// FULL SUBJECT SYSTEM
+const data = {
+  primary: {
+    subjects: ["Arabic","English","Math","Science","Physics","Chemistry","Biology","History","Geography"]
+  },
+
+  highschool: {
+    subjects: ["English","Arabic","Math","Physics","Chemistry","Biology","Programming Basics"]
+  },
+
+  university: {
+    subjects: {
+      "Mathematics": [
+        "Calculus 1","Calculus 2","Linear Algebra",
+        "Discrete Mathematics","Probability & Statistics","Numerical Analysis"
+      ],
+
+      "Computer Science": [
+        "Introduction to Programming",
+        "Object-Oriented Programming",
+        "Advanced Data Structures",
+        "Data Structures",
+        "Computer Architecture"
+      ],
+
+      "Databases": [
+        "Introduction to Databases",
+        "Advanced Databases"
+      ],
+
+      "AI & Data": [
+        "Introduction to Machine Learning & AI",
+        "Introduction to Data Science",
+        "Introduction to Cybersecurity",
+        "Introduction to Linux"
+      ],
+
+      "Languages": [
+        "English for Non-English Speakers",
+        "Arabic for Non-Arabic Speakers",
+        "English 201",
+        "English 202"
+      ]
+    }
+  }
+};
+
+// LEVEL CHANGE
+document.getElementById("level").addEventListener("change", function() {
+  let level = this.value;
+  let subject = document.getElementById("subject");
+  let course = document.getElementById("course");
+
+  subject.innerHTML = "";
+  course.innerHTML = "";
+
+  if(level === "primary" || level === "highschool") {
+    data[level].subjects.forEach(s => {
+      let opt = document.createElement("option");
+      opt.textContent = s;
+      subject.appendChild(opt);
+    });
+  }
+
+  if(level === "university") {
+    Object.keys(data.university.subjects).forEach(cat => {
+      let opt = document.createElement("option");
+      opt.textContent = cat;
+      subject.appendChild(opt);
+    });
+  }
+
+  updatePrice();
+});
+
+// SUBJECT CHANGE
+document.getElementById("subject").addEventListener("change", function() {
+  let level = document.getElementById("level").value;
+  let course = document.getElementById("course");
+  let langOption = document.getElementById("langOption");
+
+  course.innerHTML = "";
+  langOption.style.display = "none";
+
+  if(level === "university") {
+    let selected = this.value;
+    data.university.subjects[selected].forEach(c => {
+      let opt = document.createElement("option");
+      opt.textContent = c;
+      course.appendChild(opt);
+    });
+  }
+});
+
+// COURSE CHANGE → show Python/Java
+document.getElementById("course").addEventListener("change", function() {
+  let langOption = document.getElementById("langOption");
+  let val = this.value;
+
+  if(
+    val.includes("Programming") ||
+    val.includes("Data Structures")
+  ) {
+    langOption.style.display = "block";
+    langOption.innerHTML = `
+      <option>Python</option>
+      <option>Java</option>
+    `;
+  } else {
+    langOption.style.display = "none";
+  }
+});
+
+// PRICING
+document.getElementById("package").addEventListener("change", updatePrice);
+document.getElementById("level").addEventListener("change", updatePrice);
+
+function updatePrice() {
+  let level = document.getElementById("level").value;
+  let pack = document.getElementById("package").value;
+
+  let base = 0;
+  if(level === "primary") base = 20;
+  if(level === "highschool") base = 35;
+  if(level === "university") base = 45;
+
+  let total = base * pack;
+
+  if(pack == 3) total *= 0.9;
+  if(pack == 10) total *= 0.8;
+
+  document.getElementById("priceBox").innerText =
+    "Total Price: $" + total.toFixed(2);
+}
+
+// SUBMIT
+function submitBooking() {
+  let time = document.getElementById("time").value;
+  let utc = new Date(time).toISOString();
+
+  alert(
+    "Booking submitted!\n\n" +
+    "UTC Time: " + utc +
+    "\nSession Duration: 1 hour 20 minutes\nIncludes quizzes & project help."
+  );
+}
+
+</script>
 
 </body>
 </html>
