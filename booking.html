@@ -1,178 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>StudyBuddy | Booking</title>
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #F6F1EB;
-      color: #2E2E2E;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: auto;
-      padding: 40px 20px;
-    }
-
-    h1 {
-      text-align: center;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-
-    select, input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-    }
-
-    .btn {
-      width: 100%;
-      background: #2EC4B6;
-      color: white;
-      padding: 15px;
-      border: none;
-      border-radius: 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .price-box {
-      background: white;
-      padding: 15px;
-      border-radius: 12px;
-      margin-top: 20px;
-      text-align: center;
-    }
-  </style>
+  <title>Booking</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="container">
+<div class="hero">
+  <h1>Book a Session</h1>
 
-  <h1>Book Your Session</h1>
+  <input type="text" placeholder="Your Name"><br><br>
+  <input type="email" placeholder="Email"><br><br>
 
-  <!-- LEVEL -->
-  <div class="form-group">
-    <label>Level</label>
-    <select id="level">
-      <option value="">Select Level</option>
-      <option value="primary">Primary</option>
-      <option value="highschool">High School</option>
-      <option value="university">University</option>
-    </select>
-  </div>
+  <select>
+    <option>Primary</option>
+    <option>High School</option>
+    <option>University</option>
+  </select><br><br>
 
-  <!-- SUBJECT -->
-  <div class="form-group">
-    <label>Subject</label>
-    <select id="subject">
-      <option>Select subject</option>
-    </select>
-  </div>
+  <input type="datetime-local"><br><br>
 
-  <!-- PACKAGE -->
-  <div class="form-group">
-    <label>Package</label>
-    <select id="package">
-      <option value="1">1 Session</option>
-      <option value="3">3 Sessions (-10%)</option>
-      <option value="10">10 Sessions (-20%)</option>
-    </select>
-  </div>
-
-  <!-- TIME -->
-  <div class="form-group">
-    <label>Select Time</label>
-    <input type="datetime-local" id="time"/>
-  </div>
-
-  <!-- NAME -->
-  <div class="form-group">
-    <label>Your Name</label>
-    <input type="text" id="name"/>
-  </div>
-
-  <!-- EMAIL -->
-  <div class="form-group">
-    <label>Email</label>
-    <input type="email" id="email"/>
-  </div>
-
-  <button class="btn" onclick="submitBooking()">Submit Booking</button>
-
-  <div class="price-box" id="priceBox">
-    Price will appear here
-  </div>
+  <button class="btn" onclick="alert('Booking submitted!')">
+    Submit
+  </button>
 
 </div>
-
-<script>
-
-const subjects = {
-  primary: ["Math","Science","English","Arabic","History","Geography"],
-  highschool: ["Math","Physics","Chemistry","Biology","English","Programming Basics"],
-  university: ["Calculus 1","Calculus 2","Linear Algebra","Python","Java","Databases"]
-};
-
-document.getElementById("level").addEventListener("change", function() {
-  let level = this.value;
-  let subjectSelect = document.getElementById("subject");
-  subjectSelect.innerHTML = "";
-
-  subjects[level].forEach(sub => {
-    let option = document.createElement("option");
-    option.textContent = sub;
-    subjectSelect.appendChild(option);
-  });
-});
-
-document.getElementById("package").addEventListener("change", updatePrice);
-document.getElementById("level").addEventListener("change", updatePrice);
-
-function updatePrice() {
-  let level = document.getElementById("level").value;
-  let pack = document.getElementById("package").value;
-
-  let base = 0;
-
-  if(level === "primary") base = 10;
-  if(level === "highschool") base = 15;
-  if(level === "university") base = 20;
-
-  let total = base * pack;
-
-  if(pack == 3) total *= 0.9;
-  if(pack == 10) total *= 0.8;
-
-  document.getElementById("priceBox").innerText =
-    "Total Price: $" + total.toFixed(2);
-}
-
-function submitBooking() {
-  let time = document.getElementById("time").value;
-
-  let utc = new Date(time).toISOString();
-
-  alert("Booking submitted!\nUTC Time: " + utc);
-}
-
-</script>
 
 </body>
 </html>
